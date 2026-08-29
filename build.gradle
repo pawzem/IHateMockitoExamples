@@ -26,4 +26,8 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	testLogging {
+		// print the full assertion / exception message instead of "AssertionFailedError at Foo.java:15"
+		exceptionFormat = 'full'
+	}
 }

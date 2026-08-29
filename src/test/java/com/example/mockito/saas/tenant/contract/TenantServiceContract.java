@@ -37,8 +37,9 @@ public abstract class TenantServiceContract {
     void renamesTenant() {
         TenantDto tenant = service().register("acme", "Acme Corp");
 
-        service().rename(tenant.id(), "Acme Holdings");
+        TenantDto renamed = service().rename(tenant.id(), "Acme Holdings");
 
+        assertEquals("Acme Holdings", renamed.displayName());
         assertEquals("Acme Holdings", service().find(tenant.id()).orElseThrow().displayName());
     }
 
