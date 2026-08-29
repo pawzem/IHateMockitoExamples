@@ -32,6 +32,14 @@ class InvoiceServiceTest {
     }
 
     @Test
+    void refusesInvoiceForSuspendedTenant() {
+        var error = assertThrows(IllegalStateException.class,
+                () -> invoices.invoiceHeader(TenantCards.SUSPENDED_TENANT.id(), new BigDecimal("250.00")));
+
+        assertEquals("Tenant is suspended: suspended-tenant", error.getMessage());
+    }
+
+    @Test
     void refusesInvoiceForUnknownTenant() {
         assertThrows(IllegalStateException.class,
                 () -> invoices.invoiceHeader(TenantCards.UNKNOWN_TENANT, new BigDecimal("250.00")));

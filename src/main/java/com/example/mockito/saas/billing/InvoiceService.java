@@ -3,6 +3,7 @@ package com.example.mockito.saas.billing;
 import com.example.mockito.saas.shared.identity.TenantId;
 import com.example.mockito.saas.tenant.contract.TenantDto;
 import com.example.mockito.saas.tenant.contract.TenantService;
+import com.example.mockito.saas.tenant.contract.TenantStatus;
 
 import java.math.BigDecimal;
 
@@ -17,6 +18,9 @@ public class InvoiceService {
     public String invoiceHeader(TenantId tenantId, BigDecimal amount) {
         TenantDto tenant = tenants.find(tenantId)
                 .orElseThrow(() -> new IllegalStateException("Unknown tenant " + tenantId));
+        if (tenant.status() == TenantStatus.SUSPENDED) {
+            throw new IllegalStateException("Tenant is suspended: " + tenant.slug());
+        }
         return "Invoice for %s: %s PLN".formatted(tenant.displayName(), amount);
     }
 }

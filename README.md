@@ -1,6 +1,6 @@
 # Why I hate Mockito — companion code
 
-Reference code for the blog post [Why I hate Mockito](https://pawzem.github.io/fox-tech/2026/08/why-I-hate-Mockito/).
+Reference code for the blog post [Why I hate Mockito](https://pawzem.github.io/fox-tech/2026/08/why-i-hate-mockito/).
 
 Each example keeps two snapshots of the same system side by side — `v1` before a business change,
 `v2` after it — so you can diff them and see exactly what the mocks missed.
@@ -49,7 +49,8 @@ The counterpart — what to do instead. The `saas` packages are structured by bo
   interface with two variants (`JdbcTenantRepository` and an in-memory one), and
   `TenantServiceImpl`.
 - `saas.billing` — a consuming context. Its `InvoiceServiceTest` uses the stub like the real
-  thing — registers a tenant or just picks a card: no `@Mock`, no `when()`, no `verify()`.
+  thing — registers a tenant or just picks a card (including `SUSPENDED_TENANT`, which
+  `InvoiceService` refuses to invoice): no `@Mock`, no `when()`, no `verify()`.
 
 The glue is `TenantServiceContract` — one abstract test suite that runs three times: against the
 real implementation on Testcontainers (`TenantServiceImplTest`), against the real implementation
