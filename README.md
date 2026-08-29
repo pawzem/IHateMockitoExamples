@@ -41,18 +41,23 @@ Each example keeps two snapshots of the same system side by side — `v1` before
 The counterpart — what to do instead. The `saas` packages are structured by bounded context:
 
 - `saas.tenant.contract` — the ONLY public package of the tenant context: the `TenantService`
-  facade, DTOs, exceptions, and `TenantServiceStub`, a real in-memory implementation shipped BY
-  the tenant context FOR everybody else's tests.
-- `saas.tenant` — package-private internals: the `Tenant` aggregate, the JDBC repository, and
+  facade, DTOs, exceptions, `TenantServiceStub` (an in-memory implementation shipped BY the
+  tenant context FOR everybody else's tests), and `TenantCards` — static well-known test data in
+  the style of Stripe's test card numbers (`NORMAL_TENANT`, `SUSPENDED_TENANT`,
+  `UNKNOWN_TENANT`) that the stub ships pre-seeded with.
+- `saas.tenant` — package-private internals: the `Tenant` aggregate, `TenantRepository` as an
+  interface with two variants (`JdbcTenantRepository` and an in-memory one), and
   `TenantServiceImpl`.
 - `saas.billing` — a consuming context. Its `InvoiceServiceTest` uses the stub like the real
-  thing: no `@Mock`, no `when()`, no `verify()`.
+  thing — registers a tenant or just picks a card: no `@Mock`, no `when()`, no `verify()`.
 
-The glue is `TenantServiceContract` — one abstract test suite that runs twice: against the real
-implementation on Testcontainers (`TenantServiceImplTest`) and against the stub in memory
-(`TenantServiceStubTest`). If the contract changes, the impl run goes red; when the stub follows,
-the change propagates into every consuming context's tests — a fix in one place instead of a hunt
-across every `when(...)` in the repo. All tests in this example are green.
+The glue is `TenantServiceContract` — one abstract test suite that runs three times: against the
+real implementation on Testcontainers (`TenantServiceImplTest`), against the real implementation
+wired with an `InMemoryTenantRepository` (`TenantServiceInMemoryTest` — the real thing without
+Docker), and against the stub (`TenantServiceStubTest`). If the contract changes, the impl runs
+go red; when the stub follows, the change propagates into every consuming context's tests — a fix
+in one place instead of a hunt across every `when(...)` in the repo. All tests in this example
+are green.
 
 ## Running
 

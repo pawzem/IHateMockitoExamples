@@ -33,7 +33,7 @@ class TenantServiceImplTest extends TenantServiceContract {
                         status VARCHAR(16) NOT NULL
                     )""");
         }
-        service = new TenantServiceImpl(new TenantRepository(dataSource));
+        service = new TenantServiceImpl(new JdbcTenantRepository(dataSource));
     }
 
     @Override

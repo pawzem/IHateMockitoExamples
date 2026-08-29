@@ -15,6 +15,11 @@ public class TenantServiceStub implements TenantService {
 
     private final Map<TenantId, TenantDto> tenants = new LinkedHashMap<>();
 
+    public TenantServiceStub() {
+        tenants.put(TenantCards.NORMAL_TENANT.id(), TenantCards.NORMAL_TENANT);
+        tenants.put(TenantCards.SUSPENDED_TENANT.id(), TenantCards.SUSPENDED_TENANT);
+    }
+
     @Override
     public TenantDto register(String slug, String displayName) {
         if (tenants.values().stream().anyMatch(tenant -> tenant.slug().equals(slug))) {
